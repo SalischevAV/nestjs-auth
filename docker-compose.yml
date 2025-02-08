@@ -28,6 +28,18 @@ services:
     networks:
       - backend
 
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    container_name: redisinsight
+    ports:
+      - 5540:5540
+    networks:
+      - backend
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379
+
 volumes:
   postgres_data:
   redis_data:
