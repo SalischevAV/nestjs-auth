@@ -15,7 +15,6 @@ export class UserService {
                 accounts: true
             }
         })
-
         if (!user) {
             throw new NotFoundException('User not found');
         }
