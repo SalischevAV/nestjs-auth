@@ -1,0 +1,26 @@
+import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
+import { getCorsConfig } from 'config';
+
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+	const app = await NestFactory.create(AppModule);
+
+	const config = app.get(ConfigService);
+	const logger = new Logger('Bootstrap');
+
+	app.enableCors(getCorsConfig(config));
+
+	const port = config.getOrThrow<number>('HTTP_PORT');
+	const host = config.get<string>('HTTP_HOST');
+	try {
+		await app.listen(port);
+		logger.log(`Application is running on: ${host}:${port}`);
+	} catch (error) {
+		logger.error('Failed to start application', error);
+		process.exit(1);
+	}
+}
+bootstrap();
