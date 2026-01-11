@@ -47,13 +47,8 @@ export class AuthService {
 						name,
 					},
 				});
-				const { accessToken, refreshToken, refreshTokenExpires } =
-					await this.generateTokens(newUser);
-				await this.prismaService.user.update({
-					where: { id: newUser.id },
-					data: { accessToken, refreshToken },
-				});
-				return { accessToken, refreshToken, refreshTokenExpires };
+				const tokens = await this.generateTokens(newUser);
+				return tokens;
 			} catch (error) {
 				this.logger.error(error);
 				throw InternalServerErrorException;
@@ -75,6 +70,11 @@ export class AuthService {
 		});
 		const refreshToken = await this.jwtService.signAsync(payload, {
 			expiresIn: this.JWT_REFRESH_TOKEN_TTL,
+		});
+
+		await this.prismaService.user.update({
+			where: { id },
+			data: { refreshToken },
 		});
 
 		return {
