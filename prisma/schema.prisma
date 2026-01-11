@@ -10,12 +10,14 @@ datasource db {
 model User {
   id String @id @default(nanoid())
 
-  name     String
-  email    String @unique
-  password String
+  name         String
+  email        String   @unique
+  password     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  refreshToken String?
+  accessToken  String?
 
   @@map("users")
 }
